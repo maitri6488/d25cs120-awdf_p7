@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import Navbar from './components/Navbar';
 import AuthModal from './components/AuthModal';
+import EditTaskModal from './components/EditTaskModal';
 import TaskForm from './components/TaskForm';
 import TaskList from './components/TaskList';
 import Toast from './components/Toast';
@@ -23,6 +24,7 @@ function App() {
   const [filter, setFilter] = useState('all');
   const [search, setSearch] = useState('');
   const [toast, setToast] = useState({ message: '', type: 'success' });
+  const [editingTask, setEditingTask] = useState(null);
 
   const showToast = (message, type = 'success') => setToast({ message, type });
 
@@ -84,6 +86,12 @@ function App() {
 
   const handleToggleComplete = async (id, completed) => {
     await updateTaskAPI(id, { completed });
+    loadTasks();
+  };
+
+  const handleSaveEditedTask = async (id, updates) => {
+    await updateTaskAPI(id, updates);
+    showToast('Task updated successfully!', 'success');
     loadTasks();
   };
 
@@ -152,6 +160,7 @@ function App() {
             <TaskList
               tasks={tasks}
               onToggleComplete={handleToggleComplete}
+              onEditTask={(task) => setEditingTask(task)}
               onDeleteTask={handleDeleteTask}
               filter={filter}
               setFilter={setFilter}
@@ -166,6 +175,13 @@ function App() {
         isOpen={isAuthOpen}
         onClose={() => setIsAuthOpen(false)}
         onAuthSuccess={handleAuthSuccess}
+      />
+
+      <EditTaskModal
+        isOpen={Boolean(editingTask)}
+        task={editingTask}
+        onClose={() => setEditingTask(null)}
+        onSave={handleSaveEditedTask}
       />
 
       <Toast

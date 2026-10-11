@@ -1,7 +1,7 @@
 import React from 'react';
 import './TaskList.css';
 
-function TaskList({ tasks, onToggleComplete, onDeleteTask, filter, setFilter, search, setSearch }) {
+function TaskList({ tasks, onToggleComplete, onEditTask, onDeleteTask, filter, setFilter, search, setSearch }) {
   return (
     <div className="task-list-container">
       {/* Search and Filters Bar */}
@@ -54,6 +54,7 @@ function TaskList({ tasks, onToggleComplete, onDeleteTask, filter, setFilter, se
                   className="task-checkbox"
                   checked={task.completed}
                   onChange={() => onToggleComplete(task._id, !task.completed)}
+                  title={task.completed ? 'Mark pending' : 'Mark completed'}
                 />
                 <div className="task-content">
                   <h4 className="task-title">{task.title}</h4>
@@ -69,13 +70,22 @@ function TaskList({ tasks, onToggleComplete, onDeleteTask, filter, setFilter, se
                 </div>
               </div>
 
-              <button
-                className="task-delete-btn"
-                onClick={() => onDeleteTask(task._id)}
-                title="Delete Task"
-              >
-                &times;
-              </button>
+              <div className="task-item-actions">
+                <button
+                  className="task-edit-btn"
+                  onClick={() => onEditTask(task)}
+                  title="Edit Task Details"
+                >
+                  ✏️ Edit
+                </button>
+                <button
+                  className="task-delete-btn"
+                  onClick={() => onDeleteTask(task._id)}
+                  title="Delete Task"
+                >
+                  &times;
+                </button>
+              </div>
             </div>
           ))}
         </div>
